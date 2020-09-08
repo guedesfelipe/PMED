@@ -14,6 +14,10 @@ Para este projeto você precisará ter instalado no ambiente o docker: https://d
 
 ## **Preparando o Ambiente**
 
+Crie um diretório de log dentro da pasta raiz do projeto onde você salvou:
+
+    mkdir log
+
 Precisamos criar um container do rabbitmq para gerenciar nossa fila:
 
 Para baixar a imagem do rabbitmq:
