@@ -24,14 +24,12 @@ Crie um diretório de log dentro da pasta raiz do projeto onde você salvou:
 
 Precisamos criar um container do rabbitmq para gerenciar nossa fila:
 
-Para baixar a imagem do rabbitmq:
-
-    docker pull rabbitmq
-
-Para criar um container do rabbitmq:
+Para criar um container do rabbitmq (Caso não tenha a imagem do rabbitmq ele vai
+baixar):
 
     docker run -d --hostname my-rabbit --name rabbit13 -p 8080:15672 -p 5672:5672 -p 25676:25676 rabbitmq:3-management
 
+    > Pode ser necessário acesso root
 
 Após isto entre na pasta raiz do projeto e execute o seguinte comando para criar uma imagem no docker do `hospital`: 
 
