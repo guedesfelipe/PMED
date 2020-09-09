@@ -6,11 +6,15 @@ Este projeto é composto por um gerenciador de fila que será o `rabbitmq` onde 
 
 ## **Baixando o Projeto**
 
-Para baixar o projeto basta realizar um `git pull` deste projeto ou realizar o download.
+Para baixar o projeto basta realizar um `git clone https://github.com/guedesfelipe/PMED.git` deste projeto ou realizar o download.
 
 ## **Instalando dependências**
 
 Para este projeto você precisará ter instalado no ambiente o docker: https://docs.docker.com/get-docker/
+
+Ou no linux:
+
+    sudo apt install docker.io
 
 ## **Preparando o Ambiente**
 
