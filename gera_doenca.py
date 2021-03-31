@@ -1,64 +1,54 @@
-import time
-import sys
-import argparse
-from utils.utils import Fila
-from utils.utils import GeraLog
+import json
+from utils.fila import Fila
+from time import sleep
+from faker import Faker
 
 
-def main(arguments):
-    ''' Main '''
+class Doenca(object):
+    def __init__(self, nome=None):
+        self.nome = nome
+        # Cria a fila de pessoas doentes caso não exista ainda
+        self.fila_pessoas_doentes = Fila(
+            host='localhost',
+            fila='pessoas_doentes'
+        )
+        self.qtde_pessoas_infectadas = 0
 
-    parser = argparse.ArgumentParser(
-        description='Script de apresentacao para geracao de pessoas doentes',
-        add_help=True)
+        print(45*'-')
+        print(f' 🦠 {self.nome} criado e pronto para infectar...')
+        print(45*'-')
 
-    # Quantidade de pessoas infectadas
-    parser.add_argument(
-        '--qtde_infct',
-        '-q',
-        action='store',
-        type=int,
-        default=1,
-        help='Quantidade de pessoas infectadas')
+    def infecta_pessoa(self):
+        # Cria uma pessoa aleatória para ser infectada
+        self._cria_pessoa()
 
-    # Intervalo de tempo em segundos para infectar X pessoas
-    parser.add_argument(
-        '--interv_tempo',
-        '-t',
-        action='store',
-        type=int,
-        default=2,
-        help='Intervalo de tempo (Em segundos) para infectar X pessoas')
+        # Coloca uma pessoa na fila de pessoas doentes
+        self.fila_pessoas_doentes.inclui(
+            json.dumps(self.pessoa, ensure_ascii=False)
+        )
 
-    # Parser versão deste script
-    parser.add_argument('--version', action='version', version='%(prog)s 1.0')
+        # Incrementa o contador de pessoas infectadas
+        self.qtde_pessoas_infectadas += 1
 
-    res_args = parser.parse_args(arguments)
+    def _cria_pessoa(self):
+        _pessoa_fake = Faker(['pt_BR'])
 
-    # Criando o log
-    log = GeraLog(False, './log/doenca.log')
+        self.pessoa = {
+            'cpf': _pessoa_fake.cpf(),
+            'nome': _pessoa_fake.name()
+        }
 
-    try:
-        fila_de_pessoas_doentes = Fila()
-        fila_de_pessoas_doentes.cria_fila()
+    def get_total_pessoas_infectadas(self):
+        return self.qtde_pessoas_infectadas
 
-        qtde_pessoas_infect = 0
 
-        while True:
+def main():
+    covid = Doenca('COVID-19')
 
-            for i in range(res_args.qtde_infct):
-                qtde_pessoas_infect += 1
-
-                nome = 'Pessoa {}'.format(qtde_pessoas_infect)
-                fila_de_pessoas_doentes.coloca_na_fila(nome)
-                log.logger.info(' [-] {} infectada'.format(nome))
-                time.sleep(0.001)
-
-            time.sleep(res_args.interv_tempo)
-
-    finally:
-        fila_de_pessoas_doentes.desconecta()
+    while 1:
+        covid.infecta_pessoa()
+        sleep(1)
 
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
+    main()

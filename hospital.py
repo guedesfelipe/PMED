@@ -1,40 +1,45 @@
-import time
-from utils.utils import Fila
-from utils.utils import GeraLog
+import json
+from utils.fila import Fila
+from time import sleep
 
 
-log = None
+class Hospital(object):
+    def __init__(self, nome=None):
+        self.nome = nome
 
+        # Cria a fila de pessoas doentes caso não exista ainda
+        self.fila_pessoas_doentes = Fila(
+            host='localhost',
+            fila='pessoas_doentes'
+        )
+        self.qtde_pessoas_tratadas = 0
 
-def callback(ch, method, properties, body):
-    ''' Callback '''
+        print(45*'-')
+        print(f' 🏥 Esperando pessoas no Hospital {self.nome}')
+        print(45*'-')
+        print(str(self.fila_pessoas_doentes.total()))
 
-    global log
+        self.fila_pessoas_doentes.canal.basic_qos(prefetch_count=1)
+        self.fila_pessoas_doentes.canal.basic_consume(
+            queue='pessoas_doentes',
+            on_message_callback=self._recebe_pessoa_doente
+        )
+        self.fila_pessoas_doentes.canal.start_consuming()
 
-    log.logger.info(' [x] {} chegou ao Hospital'.format(body.decode()))
-    time.sleep(3)
-    log.logger.info(' [x] {} tratada!!'.format(body.decode()))
-    ch.basic_ack(delivery_tag=method.delivery_tag)
+    def _trata_pessoa(self, ch, method):
+        print(f' 💉 {self.pessoa} sendo tratada...')
+        sleep(2)
+        print(f' 😃 {self.pessoa} tratada!\n')
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+
+    def _recebe_pessoa_doente(self, ch, method, properties, body):
+        self.pessoa = json.loads(body.decode())
+        print(f' 😷 {self.pessoa} chegou ao Hospital {self.nome}')
+        self._trata_pessoa(ch, method)
 
 
 def main():
-    ''' Main '''
-
-    global log
-
-    fila_pessoas_doentes = Fila()
-    fila_pessoas_doentes.cria_fila()
-
-    # Criando o log
-    log = GeraLog(False, './log/hospital.log')
-
-    log.logger.info(
-        ' [*] Esperando pessoas no Hospital. Aperte CTRL+C para sair')
-
-    fila_pessoas_doentes.canal.basic_qos(prefetch_count=1)
-    fila_pessoas_doentes.canal.basic_consume(
-        queue='pessoas_doentes', on_message_callback=callback)
-    fila_pessoas_doentes.canal.start_consuming()
+    Hospital('Unimed')
 
 
 if __name__ == '__main__':
