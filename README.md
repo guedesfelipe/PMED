@@ -2,7 +2,7 @@
 
 Neste projeto visamos entender os conceitos aplicáveis de um projeto feito com microserviços que aumentam a performance e a escalabiladade dos negócios.
 
-Este projeto é composto por um gerenciador de fila que será o `rabbitmq` onde tera **N´s** aplicações consumindo o conteúdo desta fila (Que neste exemplo será os `hospitais`) e **N´s** aplicações colocando conteúdo na fila (Que neste exemplo será as `doencas`)
+Este projeto é composto por um gerenciador de fila que será o `rabbitmq` onde tera **N´s** aplicações consumindo o conteúdo desta fila (Que neste exemplo será o `hospital`) e **N´s** aplicações colocando conteúdo na fila (Que neste exemplo será a `doenca`)
 
 ## 📥 **Baixando o Projeto**
 
@@ -125,7 +125,7 @@ Após isto na pasta raiz do projeto, execute o seguinte comando para criar uma i
 
     docker build -t hospital -f docker/hospital/Dockerfile .
 
-Após a criação da imagem do `hospital` vamos criar a imagem no docker de `doencas`:
+Após a criação da imagem do `hospital` vamos criar a imagem no docker de `doenca`:
 
 ### 📜 controla_containers.py
 
