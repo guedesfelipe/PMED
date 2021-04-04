@@ -162,3 +162,9 @@ Com as duas imagens criadas agora podemos subir quantos containers quisermos de 
         docker run -it -d --name COVID --entrypoint python --network host doenca:latest gera_doenca.py --taxa-infec-seg 1
 
 > ⚠️ Trocar a variável ***PATH_DO_PROJETO*** para a pasta onde o projeto foi salvo em sua máquina
+
+## 📜 controla_containers.py
+
+Para verificar todos os comandos basta digitar:
+
+    python controla_containers.py --help
