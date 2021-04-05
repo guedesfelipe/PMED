@@ -133,7 +133,7 @@ Após a criação da imagem do `hospital` vamos criar a imagem no docker de `doe
 
 ### 🐳
 
-    docker build -t doenca -f docker/doencas/Dockerfile .
+    docker build -t doenca -f docker/doenca/Dockerfile .
 
 
 Com as duas imagens criadas agora podemos subir quantos containers quisermos de cada imagem
