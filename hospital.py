@@ -1,4 +1,5 @@
 import json
+import typer
 from utils.fila import Fila
 from time import sleep
 
@@ -17,7 +18,6 @@ class Hospital(object):
         print(45*'-')
         print(f' 🏥 Esperando pessoas no Hospital {self.nome}')
         print(45*'-')
-        print(str(self.fila_pessoas_doentes.total()))
 
         self.fila_pessoas_doentes.canal.basic_qos(prefetch_count=1)
         self.fila_pessoas_doentes.canal.basic_consume(
@@ -26,21 +26,40 @@ class Hospital(object):
         )
         self.fila_pessoas_doentes.canal.start_consuming()
 
-    def _trata_pessoa(self, ch, method):
-        print(f' 💉 {self.pessoa} sendo tratada...')
-        sleep(2)
-        print(f' 😃 {self.pessoa} tratada!\n')
-        ch.basic_ack(delivery_tag=method.delivery_tag)
+    def _atende_pessoa(self):
+        print(f' 🩺 {self.nome_pessoa} sendo atendida(o)...')
+        sleep(0.25)
+        self._examina_pessoa()
+
+    def _examina_pessoa(self):
+        self.doenca = self.pessoa['doenca']
+        print(f' 🔬 {self.nome_pessoa} doença detectada: {self.doenca}')
+        sleep(0.5)
+        self._trata_pessoa()
+
+    def _trata_pessoa(self):
+        print(f' 💉 {self.nome_pessoa} sendo tratada(o)...')
+        sleep(1)
+        print(f' 😃 {self.nome_pessoa} tratada(o)!\n')
+        self._ch.basic_ack(delivery_tag=self.method.delivery_tag)
 
     def _recebe_pessoa_doente(self, ch, method, properties, body):
         self.pessoa = json.loads(body.decode())
-        print(f' 😷 {self.pessoa} chegou ao Hospital {self.nome}')
-        self._trata_pessoa(ch, method)
+        self.nome_pessoa = self.pessoa['nome']
+        self.cpf_pessoa = self.pessoa['cpf']
+
+        self._ch = ch
+        self.method = method
+
+        print((f' 😷 {self.nome_pessoa} CPF: {self.cpf_pessoa} chegou ao '
+               f'Hospital {self.nome}'))
+        sleep(0.25)
+        self._atende_pessoa()
 
 
-def main():
-    Hospital('Unimed')
+def main(nome_hospital: str):
+    Hospital(nome_hospital)
 
 
 if __name__ == '__main__':
-    main()
+    typer.run(main)

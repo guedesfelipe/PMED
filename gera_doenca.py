@@ -1,4 +1,5 @@
 import json
+import typer
 from utils.fila import Fila
 from time import sleep
 from faker import Faker
@@ -35,20 +36,21 @@ class Doenca(object):
 
         self.pessoa = {
             'cpf': _pessoa_fake.cpf(),
-            'nome': _pessoa_fake.name()
+            'nome': _pessoa_fake.name(),
+            'doenca': self.nome
         }
 
     def get_total_pessoas_infectadas(self):
         return self.qtde_pessoas_infectadas
 
 
-def main():
-    covid = Doenca('COVID-19')
+def main(nome_doenca: str, taxa_infec_seg: int = 1):
+    doenca = Doenca(nome_doenca)
 
     while 1:
-        covid.infecta_pessoa()
-        sleep(1)
+        doenca.infecta_pessoa()
+        sleep(taxa_infec_seg)
 
 
 if __name__ == '__main__':
-    main()
+    typer.run(main)
