@@ -146,7 +146,7 @@ Com as duas imagens criadas agora podemos subir quantos containers quisermos de 
 
 ### 🐳
 
-        docker run -it -d --name hospital_1 --entrypoint python --network host hospital:latest hospital.py
+        docker run -it -d --name hospital_1 --entrypoint python --network host hospital:latest gera_hospital.py
 
 > ⚠️ Trocar a variável ***PATH_DO_PROJETO*** para a pasta onde o projeto foi salvo em sua máquina
 

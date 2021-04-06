@@ -11,7 +11,7 @@ class Tipos(str, Enum):
 
 LIST_COMMAND = {
     'doenca': 'gera_doenca.py',
-    'hospital': 'hospital.py'
+    'hospital': 'gera_hospital.py'
 }
 
 
